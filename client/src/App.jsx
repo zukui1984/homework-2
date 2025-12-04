@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
-import './App.css';
 
 function App() {
   const [code, setCode] = useState('');

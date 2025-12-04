@@ -2,6 +2,8 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const httpServer = createServer(app);
@@ -15,6 +17,22 @@ const io = new Server(httpServer, {
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static frontend (if present)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const staticPath = path.join(__dirname, 'public');
+if (process.env.NODE_ENV === 'production' || true) {
+  // Serve built client files from server/public (copied there by Dockerfile or deploy process)
+  app.use(express.static(staticPath));
+  // For SPA client-side routing, return index.html for unknown routes
+  app.get(/^(?!\/api).*/, (req, res) => {
+    const indexHtml = path.join(staticPath, 'index.html');
+    res.sendFile(indexHtml, (err) => {
+      if (err) res.status(404).end();
+    });
+  });
+}
 
 // In-memory storage for the shared code
 let sharedCode = '';

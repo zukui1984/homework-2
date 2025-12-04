@@ -7,10 +7,24 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 const httpServer = createServer(app);
+// Configure allowed origins for Socket.io CORS. In development we allow localhost:5173.
+// In production you can set ALLOWED_ORIGINS (comma-separated) or leave empty to allow the request origin.
+const defaultDevOrigin = 'http://localhost:5173';
+let corsOrigin = defaultDevOrigin;
+if (process.env.ALLOWED_ORIGINS) {
+  // support comma-separated list from env
+  corsOrigin = process.env.ALLOWED_ORIGINS.split(',');
+} else if (process.env.NODE_ENV === 'production') {
+  // in production, allow requests from the same origin (Render will serve the static files from the same host)
+  // letting Socket.io accept the request origin by using `true` here is convenient.
+  corsOrigin = true;
+}
+
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST']
+    origin: corsOrigin,
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 

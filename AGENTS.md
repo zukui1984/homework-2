@@ -20,3 +20,24 @@ I want to run both my backend (port 3000) and my frontend (Vite) with a single c
 Question 4:
 Replace the simple HTML VS Code in my React App with 'react-monaco-editor' (or Monaco Editor) to support Python syntax highlighting. Ensure the real-time sync still works when the editor content changes.
 
+Question 5:
+I want to execute the Python code inside the browser safely. Add the 'pyodide' library to my React frontend. Add a 'Run Code' button that:
+
+Loads Pyodide.
+
+Executes the code currently in the editor.
+
+Displays the output (print statements) in a 'Console' div below the editor
+
+Question 6:
+Help me containerize this application. Create a single Dockerfile that:
+
+Builds the React frontend (Vite build).
+
+Sets up the Node.js backend.
+
+Serves the static frontend files using the Node backend.
+Use a standard Node.js base image.
+
+Question 7:
+I want to deploy this to Render.com. What settings should I use? (e.g., Build Command, Start Command).

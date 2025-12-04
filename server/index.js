@@ -69,8 +69,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Start the server
-const PORT = 3000;
+// Start the server (respect Render / hosting PORT if provided)
+const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
   console.log(`PyShare server running on http://localhost:${PORT}`);
 });

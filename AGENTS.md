@@ -17,3 +17,6 @@ I need to verify that my backend works. Create an integration test file using 'J
 Question 3:
 I want to run both my backend (port 3000) and my frontend (Vite) with a single command. Help me configure 'concurrently' in the root package.json to run both servers at once with 'npm run dev'.
 
+Question 4:
+Replace the simple HTML VS Code in my React App with 'react-monaco-editor' (or Monaco Editor) to support Python syntax highlighting. Ensure the real-time sync still works when the editor content changes.
+

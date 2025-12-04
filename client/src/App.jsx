@@ -1,5 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
+import Editor from '@monaco-editor/react';
 
 function App() {
   const [code, setCode] = useState('');
@@ -24,8 +25,9 @@ function App() {
 
     // Listen for code updates from server
     socketRef.current.on('code-update', (updatedCode) => {
-      setCode(updatedCode);
+      // Avoid overwriting local typing (best-effort)
       isLocalChangeRef.current = false;
+      setCode(updatedCode ?? '');
     });
 
     // Listen for disconnection
@@ -47,17 +49,19 @@ function App() {
     };
   }, []);
 
-  // Handle code changes
-  const handleCodeChange = (event) => {
-    const newCode = event.target.value;
-    setCode(newCode);
-    isLocalChangeRef.current = true;
-
-    // Emit code change to server
+  // Emit code change to server (debounced-ish)
+  const emitChange = useCallback((newCode) => {
     if (socketRef.current && socketRef.current.connected) {
       socketRef.current.emit('code-change', newCode);
     }
-  };
+  }, []);
+
+  const handleEditorChange = useCallback((value) => {
+    const newCode = value ?? '';
+    setCode(newCode);
+    isLocalChangeRef.current = true;
+    emitChange(newCode);
+  }, [emitChange]);
 
   return (
     <div className="container">
@@ -69,12 +73,20 @@ function App() {
         </div>
       </div>
 
-      <div className="editor-container">
-        <textarea
-          className="code-editor"
+      <div className="editor-container" style={{ flex: 1, padding: 20 }}>
+        <Editor
+          height="100%"
+          defaultLanguage="python"
+          language="python"
           value={code}
-          onChange={handleCodeChange}
-          placeholder="Start typing code here... It will be synchronized in real-time across all connected clients!"
+          onChange={handleEditorChange}
+          theme="vs-dark"
+          options={{
+            fontSize: 14,
+            minimap: { enabled: false },
+            wordWrap: 'on',
+            automaticLayout: true
+          }}
         />
       </div>
 

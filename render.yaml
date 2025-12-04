@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: pyshare
+    env: docker
+    branch: main
+    dockerfilePath: ./Dockerfile
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Optional: set ALLOWED_ORIGINS to restrict Socket.io (comma-separated)
+      # - key: ALLOWED_ORIGINS
+      #   value: https://your-domain.example.com
